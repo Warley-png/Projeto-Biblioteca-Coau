@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">  <!-- Adicionei xmlns:sec para consistência (não usado aqui, mas útil em outros templates) -->
+    <head>
+        <title>Acesso Livraria COAU</title>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    </head>
+    <body>
+        <div class="container" style="padding-top: 80px; max-width: 1100px;">
+            <div class="row mb-3 align-items-center">
+                <div class="col-md-8">
+                    <h3 class="text-center text-md-start">Acesso Livraria COAU</h3>
+                </div>
+                <form th:action="@{/livros/telaLogin}" method="post" id="loginForm" class="row mb-3" style="text-align: center;">
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <div class="mb-3 row align-items-center">
+                                <label for="username" class="col-sm-4 col-form-label">Login</label>
+                                <div class="col-sm-8">
+                                    <input type="text" id="username" name="username" placeholder="Seu login" autocomplete="username" required />
+                                </div>
+                            </div>
+                            <div class="mb-3 row align-items-center">
+                                <label for="password" class="col-sm-4 col-form-label">Senha</label>
+                                <div class="col-sm-8">
+                                    <input type="password" id="password" name="password" placeholder="Senha" autocomplete="current-password" required />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="btn-group mt-3 d-flex gap-2">
+                        <button type="submit" id="loginButton" class="btn btn-success flex-fill" style="border-radius: 10px;">Entrar</button>
+                        <button type="button" class="btn btn-primary flex-fill" disabled style="border-radius: 10px;">Recuperar Senha</button>
+                    </div>
+                </form>
+                
+                <!-- Link para registro: Restrito a ADMIN (para consistência com telaprincipal.html e controlador) -->
+                <sec:authorize access="hasRole('ADMIN')">
+                    <a th:href="@{/livros/cadastroUsuario}" style="color: blue;">Registrar novo usuário</a>
+                </sec:authorize>
+            </div>
+            
+            <!-- Exibir erro (melhorei a mensagem) -->
+            <div th:if="${param.error}" class="alert alert-danger mt-3">
+                <strong>Erro de login:</strong> Usuário ou senha inválidos. Tente novamente.
+            </div>
+            
+            <!-- Mensagem opcional para sucesso (se redirecionado com sucesso) -->
+            <div th:if="${param.logout}" class="alert alert-info mt-3">
+                Você foi desconectado com sucesso.
+            </div>
+        </div>
+        
+        <script th:src="@{/js/script.js}"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    </body>
+</html>

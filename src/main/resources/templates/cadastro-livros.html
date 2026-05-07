@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">  <!-- Adicionei xmlns:sec para consistência -->
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>COAU - Cadastro de Livros</title>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+        <link rel="stylesheet" th:href="@{/estilo.css}">
+    </head>
+    <body th:class="${fullFooter} ? 'full-footer' : ''">  <!-- Classe condicional para footer full -->
+
+        <nav class="navbar navbar-expand-sm navbar-dark bg-dark fixed-top">
+            <div class="container-fluid">
+                <div class="navbar-brand d-flex align-items-center">
+                    <h1>COAU</h1>
+                </div>
+                <div class="user-info ms-auto text-end">
+                    <!-- Exibe apenas o papel do usuário logado (Administrador ou Usuário) -->
+                    <h2 id="usuario" th:text="${isAdmin ? 'Administrador' : 'Usuário'}">Usuário</h2>
+                    <p id="data" th:text="${#temporals.format(#temporals.createNow(), 'dd/MM/yyyy HH:mm')}">Data</p>
+                </div>
+            </div>
+        </nav>
+
+
+        <div class="container" style="padding-top: 80px; max-width: 1100px;">
+            <div class="row mb-3 align-items-center">
+                <div class="col-md-8">
+                    <h3 class="text-center text-md-start">Cadastro de Livros</h3>
+                </div>
+            </div>
+
+            <!-- Adicionei mensagens de sucesso/erro para feedback -->
+            <div th:if="${mensagem}" class="alert alert-success" role="alert">
+                <i class="fas fa-check-circle"></i> <span th:text="${mensagem}">Mensagem de sucesso!</span>
+            </div>
+            <div th:if="${erro}" class="alert alert-danger" role="alert">
+                <i class="fas fa-exclamation-triangle"></i> <span th:text="${erro}">Erro!</span>
+            </div>
+
+            <form id="formLivro" th:action="@{/livros/cadastro}" th:object="${livro}" method="post">
+                <input type="hidden" th:field="*{idliv}" />
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <div class="mb-3 row align-items-center">
+                            <label for="nomeLivro" class="col-sm-4 col-form-label">Título:</label>
+                            <div class="col-sm-8">
+                                <input type="text" th:field="*{nomeLivro}" id="nomeLivro" placeholder="Título" class="form-control" />
+                                <div th:errors="*{nomeLivro}" class="text-danger"></div>
+                            </div>
+                        </div>
+                        <div class="mb-3 row align-items-center">
+                            <label for="autorLivro" class="col-sm-4 col-form-label">Autor:</label>
+                            <div class="col-sm-8">
+                                <input type="text" th:field="*{autorLivro}" id="autorLivro" placeholder="Autor" class="form-control" />
+                            </div>
+                        </div>
+                        <div class="mb-3 row align-items-center">
+                            <label for="assuntoLivro" class="col-sm-4 col-form-label">Assunto:</label>
+                            <div class="col-sm-8">
+                                <input type="text" th:field="*{assuntoLivro}" id="assuntoLivro" placeholder="Assunto" class="form-control" />
+                            </div>
+                        </div>
+                        <div class="mb-3 row align-items-center">
+                            <label for="editoraLivro" class="col-sm-4 col-form-label">Editora:</label>
+                            <div class="col-sm-8">
+                                <input type="text" th:field="*{editoraLivro}" id="editoraLivro" placeholder="Editora" class="form-control" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="mb-3 row align-items-center">
+                            <label for="ano" class="col-sm-4 col-form-label">Ano lançamento:</label>
+                            <div class="col-sm-8">
+                                <input type="number" th:field="*{ano}" id="ano" placeholder="Ano" class="form-control" />
+                            </div>
+                        </div>
+                        <div class="mb-3 row align-items-center">
+                            <label for="volume" class="col-sm-4 col-form-label">Volume:</label>
+                            <div class="col-sm-8">
+                                <input type="number" th:field="*{volume}" id="volume" placeholder="Volume" class="form-control" />
+                            </div>
+                        </div>
+                        <div class="mb-3 row align-items-center">
+                            <label for="prateleiraLivro" class="col-sm-4 col-form-label">Prateleira:</label>
+                            <div class="col-sm-8">
+                                <select th:field="*{prateleiraLivro}" id="prateleiraLivro" class="form-select">
+                                    <option value="">Selecione a prateleira</option>
+                                    <option value="Maíra">Maíra</option>
+                                    <option value="Arthur">Arthur</option>
+                                    <option value="João">João</option>
+                                    <option value="Lúcia Maria">Lúcia Maria</option>
+                                    <option value="Aristides">Aristides</option>
+                                    <option value="Ruth">Ruth</option>
+                                    <option value="Mateus">Mateus</option>
+                                    <option value="Pedro">Pedro</option>
+                                    <option value="Bete">Bete</option>
+                                    <option value="Chico">Chico</option>
+                                    <option value="Gabriela">Gabriela</option>
+                                    <option value="Letícia">Letícia</option>
+                                    <option value="Luiz">Luiz</option>
+                                    <option value="Miguel">Miguel</option>
+                                    <option value="Luiza">Luiza</option>
+                                    <option value="Mariana">Mariana</option>
+                                    <option value="Nathália">Nathália</option>
+                                    <option value="Filipe">Filipe</option>
+                                    <option value="Sabrina">Sabrina</option>
+                                    <option value="Maria Fernanda">Maria Fernanda</option>
+                                    <option value="João Pedro">João Pedro</option>
+                                    <option value="Martha">Martha</option>
+                                    <option value="Marcos">Marcos</option>
+                                    <option value="Raquel">Raquel</option>
+                                    <option value="Tia Vitória">Tia Vitória</option>
+                                    <option value="Tio Tarcísio">Tio Tarcísio</option>
+                                    <option value="Túlio">Túlio</option>
+                                    <option value="Tia Ieda">Tia Ieda</option>
+                                    <option value="Tio Duda">Tio Duda</option>
+                                    <option value="Vô Darcy">Vô Darcy</option>
+                                    <option value="Vô Alair">Vô Alair</option>
+                                    <option value="Vó Rute">Vó Rute</option>
+                                    <option value="Glória">Glória</option>
+                                    <option value="Léa">Léa</option>
+                                    <option value="Bernardo">Bernardo</option>
+                                    <option value="Leta">Leta</option>
+                                    <option value="Montanha">Montanha</option>
+                                    <option value="Ro">Ro</option>
+                                    <option value="Silke">Silke</option>
+                                    <option value="Ana Baltaza">Ana Baltaza</option>
+                                    <option value="Alícia Penna">Alícia Penna</option>
+                                    <option value="Viviane Zerlotini">Viviane Zerlotini</option>
+                                    <option value="Eduardo Bittencourt">Eduardo Bittencourt</option>
+                                    <option value="Warley">Warley</option>
+                                    <option value="Bruno Giacomini">Bruno Giacomini</option>
+                                    <option value="Ana Loures">Ana Loures</option>
+                                    <option value="Oscar Clovis">Oscar Clovis</option>
+                                    <option value="César Gandola">César Gandola</option>
+                                    <option value="Aurélio">Aurélio</option>
+                                    <option value="Diego Fonseca">Diego Fonseca</option>
+                                    <option value="Nego">Nego</option>
+                                    <option value="Bruna Marinho">Bruna Marinho</option>
+                                    <option value="Bruna Medici">Bruna Medici</option>
+                                    <option value="Izabella Shatler">Izabella Shatler</option>
+                                    <option value="Laís Gross">Laís Gross</option>
+                                    <option value="Ciça Ventania">Ciça Ventania</option>
+                                    <option value="Carina Guedes">Carina Guedes</option>
+                                    <option value="Tais Clark">Tais Clark</option>
+                                    <option value="Thais Lopes">Thais Lopes</option>
+                                    <option value="Frei Gilvander">Frei Gilvander</option>
+                                    <option value="Joviano Mayer">Joviano Mayer</option>
+                                    <option value="Bella Gonçalves">Bella Gonçalves</option>
+                                    <option value="Luiz Fernando">Luiz Fernando</option>
+                                    <option value="Rafael Bittencourt">Rafael Bittencourt</option>
+                                    <option value="Pedro Otoni">Pedro Otoni</option>
+                                    <option value="Léo Péricles">Léo Péricles</option>
+                                    <option value="Poliana Souza">Poliana Souza</option>
+                                    <option value="Letícia Notini">Letícia Notini</option>
+                                    <option value="Iara Pezzuti">Iara Pezzuti</option>
+                                    <option value="Astor Piazzolla">Astor Piazzolla</option>
+                                    <option value="Beethoven">Beethoven</option>
+                                    <option value="Mozart">Mozart</option>
+                                    <option value="Bach">Bach</option>
+                                    <option value="Villa Lobos">Villa Lobos</option>
+                                    <option value="Irany Pinto">Irany Pinto</option>
+                                    <option value="Éolo Maia">Éolo Maia</option>
+                                    <option value="Sérgio Ferro">Sérgio Ferro</option>
+                                    <option value="Le Corbusier">Le Corbusier</option>
+                                    <option value="Frank Lloyd Wright">Frank Lloyd Wright</option>
+                                    <option value="Mies Van der Rohe">Mies Van der Rohe</option>
+                                    <option value="William Morris">William Morris</option>
+                                    <option value="Vilanova Artigas">Vilanova Artigas</option>
+                                    <option value="Paulo Mendes da Rocha">Paulo Mendes da Rocha</option>
+                                    <option value="Oscar Niemeyer">Oscar Niemeyer</option>
+                                    <option value="Lúcio Costa">Lúcio Costa</option>
+                                    <option value="Silvio Vasconcelos">Silvio Vasconcelos</option>
+                                    <option value="Jô Vasconcelos">Jô Vasconcelos</option>
+                                    <option value="Karl Marx">Karl Marx</option>
+                                    <option value="Engels">Engels</option>
+                                    <option value="Bakunin">Bakunin</option>
+                                    <option value="Proudhon">Proudhon</option>
+                                    <option value="Avelino Fóscolo">Avelino Fóscolo</option>
+                                    <option value="José Matos Mar">José Matos Mar</option>
+                                    <option value="Outros">Outros</option>
+                                </select>
+                                <div th:errors="*{prateleiraLivro}" class="text-danger"></div>
+                            </div>
+                        </div>
+                        <div class="mb-3 row align-items-center">
+                            <label for="tipo" class="col-sm-4 col-form-label">Tipo:</label>
+                            <div class="col-sm-8">
+                                <select th:field="*{tipo}" id="tipo" class="form-select">
+                                    <option value="">Selecione o tipo</option>
+                                    <option value="livro">Livro</option>
+                                    <option value="revista">Revista</option>
+                                </select>
+                                <div th:errors="*{tipo}" class="text-danger"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="btn-group mt-3 d-flex gap-2">
+                    <button type="submit" class="btn btn-success flex-fill" 
+                            th:text="${livro.idliv != null} ? 'Salvar Alterações' : 'Adicionar Livro'">
+                        Adicionar/Salvar
+                    </button>
+                    <button type="button" class="btn btn-secondary flex-fill" onclick="document.getElementById('formLivro').reset();">Limpar</button>
+                </div>
+            </form>
+
+            <div style="text-align:right; color: blue;">
+                <a th:href="@{/livros/telaprincipal}">Voltar ao menu Principal</a>
+            </div>
+        </div>  <!-- Fecha o container -->
+
+        <!-- Footer movido para fora do container para ocupar toda a tela -->
+        <footer class="bg-dark text-white mt-5 pt-4 pb-3">
+            <div class="row justify-content-center">
+                <div class="col-md-4 mb-4 mb-md-0 text-center">
+                    <h5 class="text-uppercase">Projeto Coau</h5>
+                    <address class="mb-0">
+                        Rua Um, 123<br>
+                        Bairro: Santa Inês<br>
+                        Cidade, Estado<br>
+                    </address>
+                </div>
+                <div class="col-md-4 mb-4 mb-md-0 text-center">
+                    <h5 class="text-uppercase">Contato</h5>
+                    <ul class="list-unstyled">
+                        <li class="mb-1">(00) 1234-5678</li>
+                        <li class="mb-1">contato@Coau.com</li>
+                    </ul>
+                </div>
+                <div class="col-md-4 text-center">
+                    <h5 class="text-uppercase mb-3">Redes Sociais</h5>
+                    <div class="rede-social">
+                        <a href="#"><img th:src="@{/imagens/facebook.png}" alt="Facebook" width="32" height="32"></a>
+                        <a href="#"><img th:src="@{/imagens/instagram.png}" alt="Instagram" width="32" height="32"></a>
+                        <a href="#"><img th:src="@{/imagens/whatsapp.png}" alt="WhatsApp" width="32" height="32"></a>
+                    </div>
+                </div>
+            </div>
+            <hr class="bg-light mt-4 mb-3">
+            <div class="row">
+                <div class="col-12 text-center">
+                    <p class="mb-0 small">&copy; 2025 Projeto COAU. Todos os direitos reservados.</p>
+                </div>
+            </div>
+        </footer>
+
+        <script th:src="@{/js/script.js}"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    </body>
+</html>

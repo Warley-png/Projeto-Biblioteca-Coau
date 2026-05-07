@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">  <!-- Adicionei xmlns:sec para controle de acesso -->
+    <head>
+        <title>Cadastro de Clientes</title>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">  <!-- Adicionei Font Awesome para ícones -->
+        <link th:href="@{/estilo.css}" rel="stylesheet">
+    </head>
+    <body th:class="${fullFooter} ? 'full-footer' : ''">
+        <nav class="navbar navbar-expand-sm navbar-dark bg-dark fixed-top">
+            <div class="container-fluid">
+                <div class="navbar-brand d-flex align-items-center">
+                    <h1>COAU</h1>
+                </div>
+                <div class="user-info ms-auto text-end">
+                    <!-- Exibe apenas o papel do usuário logado (Administrador ou Usuário) -->
+                    <h2 id="usuario" th:text="${isAdmin ? 'Administrador' : 'Usuário'}">Usuário</h2>
+                    <p id="data" th:text="${#temporals.format(#temporals.createNow(), 'dd/MM/yyyy HH:mm')}">Data</p>
+                </div>
+            </div>
+        </nav>
+
+        <div class="container" style="padding-top: 80px; max-width: 1100px;">
+            <div class="row mb-3 align-items-center">
+                <div class="col-md-8">
+                    <h3 class="text-center text-md-start">Cadastro de Clientes</h3>
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <input type="text" id="pesquisa" placeholder="Pesquisar por Nome, Email ou Telefone" class="form-control">
+                </div>
+                <div class="col-md-2">
+                    <button type="button" id="btnPesquisar" class="btn btn-primary">Pesquisar</button>
+                </div>
+                <div class="col-md-2">
+                    <button type="button" id="btnLimparPesquisa" class="btn btn-secondary">Limpar Pesquisa</button>
+                </div>
+            </div>
+
+            <!-- Melhorei mensagens com ícones -->
+            <div th:if="${mensagem}" class="alert alert-success" role="alert">
+                <i class="fas fa-check-circle"></i> <span th:text="${mensagem}">Mensagem de sucesso!</span>
+            </div>
+            <div th:if="${erro}" class="alert alert-danger" role="alert">
+                <i class="fas fa-exclamation-triangle"></i> <span th:text="${erro}">Erro!</span>
+            </div>
+
+            <table id="tblclientes" class="table table-striped table-bordered">
+                <thead class="table-dark">
+                    <tr>
+                        <th>ID</th>
+                        <th>Nome</th>
+                        <th>Email</th>
+                        <th>Telefone</th>
+                        <th>Ações</th>  
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="cliente : ${clientes}">
+                        <td th:text="${cliente.idCliente}"></td>
+                        <td th:text="${cliente.nomeCliente}"></td>
+                        <td th:text="${cliente.emailCliente}"></td>
+                        <td th:text="${cliente.telefoneCliente}"></td>
+                        <td>
+                            <!-- Apenas ADMIN: Editar e Excluir -->
+                            <sec:authorize access="hasRole('ADMIN')">
+                                <a th:href="@{/livros/editarCliente/{id}(id=${cliente.idCliente})}" class="btn btn-warning btn-sm">Editar</a>
+                                <form th:action="@{/livros/excluirCliente/{id}(id=${cliente.idCliente})}" method="post" style="display:inline;">
+                                    <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Tem certeza que deseja excluir este cliente?')">Excluir</button>
+                                </form>
+                            </sec:authorize>
+                            <!-- Se USER, a coluna fica vazia (ou adicione "Visualizar" se necessário) -->
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <form id="formCliente" th:action="@{/livros/cliente}" th:object="${cliente}" method="post">
+                <input type="hidden" th:field="*{idCliente}" />
+                <div class="mb-3 row align-items-center">
+                    <label for="nomeCliente" class="col-sm-4 col-form-label">Nome:</label>
+                    <div class="col-sm-8">
+                        <input type="text" th:field="*{nomeCliente}" id="nomeCliente" placeholder="Nome" class="form-control" />
+                        <span th:if="${#fields.hasErrors('nomeCliente')}" th:errors="*{nomeCliente}" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="mb-3 row align-items-center">
+                    <label for="emailCliente" class="col-sm-4 col-form-label">Email:</label>
+                    <div class="col-sm-8">
+                        <input type="email" th:field="*{emailCliente}" id="emailCliente" placeholder="Email" class="form-control" />
+                        <span th:if="${#fields.hasErrors('emailCliente')}" th:errors="*{emailCliente}" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="mb-3 row align-items-center">
+                    <label for="telefoneCliente" class="col-sm-4 col-form-label">Telefone:</label>
+                    <div class="col-sm-8">
+                        <input type="tel" th:field="*{telefoneCliente}" id="telefoneCliente" placeholder="Telefone" class="form-control" />
+                        <span th:if="${#fields.hasErrors('telefoneCliente')}" th:errors="*{telefoneCliente}" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="btn-group mt-3 d-flex gap-2">
+                    <button type="submit" class="btn btn-success flex-fill" 
+                            th:text="${cliente.idCliente != null} ? 'Salvar Alterações' : 'Adicionar Cliente'">
+                        Adicionar/Salvar
+                    </button>
+                    <button type="button" class="btn btn-secondary flex-fill" onclick="document.getElementById('formCliente').reset();">Limpar</button>
+                </div>
+            </form>
+
+            <div style="text-align:right; color: blue;">
+                <a th:href="@{/livros/telaprincipal}">Voltar ao menu Principal</a>
+            </div>
+
+        </div>
+        <footer class="bg-dark text-white mt-5 pt-4 pb-3">
+            <div class="row justify-content-center">
+                <div class="col-md-4 mb-4 mb-md-0 text-center">
+                    <h5 class="text-uppercase">Projeto Coau</h5>
+                    <address class="mb-0">
+                        Rua Um, 123<br>
+                        Bairro: Santa Inês<br>
+                        Cidade, Estado<br>
+                    </address>
+                </div>
+                <div class="col-md-4 mb-4 mb-md-0 text-center">
+                    <h5 class="text-uppercase">Contato</h5>
+                    <ul class="list-unstyled">
+                        <li class="mb-1">(00) 1234-5678</li>
+                        <li class="mb-1">contato@Coau.com</li>
+                    </ul>
+                </div>
+                <div class="col-md-4 text-center">
+                    <h5 class="text-uppercase mb-3">Redes Sociais</h5>
+                    <div class="rede-social">
+                        <a href="#"><img th:src="@{/imagens/facebook.png}" alt="Facebook" width="32" height="32"></a>
+                        <a href="#"><img th:src="@{/imagens/instagram.png}" alt="Instagram" width="32" height="32"></a>
+                        <a href="#"><img th:src="@{/imagens/whatsapp.png}" alt="WhatsApp" width="32" height="32"></a>
+                    </div>
+                </div>
+            </div>
+            <hr class="bg-light mt-4 mb-3">
+            <div class="row">
+                <div class="col-12 text-center">
+                    <p class="mb-0 small">&copy; 2025 Projeto COAU. Todos os direitos reservados.</p>
+                </div>
+            </div>
+        </footer>
+
+        <script th:src="@{/js/script.js}"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    </body>
+</html>

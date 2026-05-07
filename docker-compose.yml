@@ -1,0 +1,23 @@
+services:
+  mysql-db:
+    image: mysql:8.0
+    environment:
+      MYSQL_DATABASE: projintegrador
+      MYSQL_ROOT_PASSWORD: root
+    ports:
+      - "3306:3306"
+
+  coau-app:
+    build: .
+    ports:
+      - "8080:8080"
+    environment:
+      # Adicionamos o allowPublicKeyRetrieval=true e useSSL=false
+      JDBC_DATABASE_URL: jdbc:mysql://mysql-db:3306/projintegrador?allowPublicKeyRetrieval=true&useSSL=false
+      JDBC_DATABASE_USERNAME: root
+      JDBC_DATABASE_PASSWORD: root
+    depends_on:
+      - mysql-db
+      #define volume 
+volumes:
+  mysql_data:

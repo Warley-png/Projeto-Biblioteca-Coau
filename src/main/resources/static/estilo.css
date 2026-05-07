@@ -1,0 +1,120 @@
+body { 
+    font-family: Arial, sans-serif; 
+    margin: 0; 
+    padding: 0; 
+}
+   .content {
+       background-image: url('/imagens/fundo.jpg');  /* Caminho relativo à raiz do servidor */
+       background-size: cover;  /* Cobre toda a área sem distorcer */
+       background-position: center;  /* Centraliza a imagem */
+       background-repeat: no-repeat;  /* Não repete a imagem */
+       /* Outros estilos existentes, como padding, margin, etc. */
+       padding: 30px;  /* Exemplo: adicione padding para que o texto não fique colado na borda */
+       margin-bottom: 0;  /* Remove margem inferior para colar no footer */
+       min-height: calc(100vh - 200px);  /* Ajuste a altura para ocupar quase toda a tela, subtraindo o espaço do footer (aprox. 200px) */
+   }
+   footer {
+       margin-top: 0;  /* Remove margem superior para colar no main */
+   }
+
+.sidebar { 
+    position: fixed; 
+    left: 0; 
+    top: 56px;  
+    width: 250px; 
+    height: calc(100vh - 56px); 
+    background-color: #343a40; 
+    color: white; 
+    padding: 20px 0; 
+    overflow-y: auto; 
+    transition: width 0.3s;  
+}
+
+.sidebar h3 { 
+    color: #ffc107; 
+    padding: 0 20px; 
+    margin-bottom: 10px; 
+    border-bottom: 1px solid #495057; 
+}
+
+.sidebar ul { 
+    list-style: none; 
+    padding: 0; 
+    margin: 0; 
+}
+
+.sidebar li { 
+    padding: 10px 20px; 
+}
+
+.sidebar a { 
+    color: white; 
+    text-decoration: none; 
+    display: block; 
+}
+
+.sidebar a:hover { 
+    background-color: #495057; 
+}
+
+.content { 
+    margin-left: 250px; 
+    margin-top: 56px;  
+    padding: 20px; 
+    min-height: calc(100vh - 56px - 200px); 
+}
+
+.navbar-brand h1 { 
+    margin: 0; 
+    font-size: 1.5rem; 
+}
+
+.user-info h2, .user-info p { 
+    margin: 0; 
+    color: white; 
+    font-size: 1rem; 
+}
+
+footer { 
+    margin-left: 250px;  /* Respeita o sidebar em desktop */
+    width: calc(100% - 250px);  /* Largura restante */
+    clear: both; 
+    margin-top: 20px; 
+    position: relative; 
+}
+
+.rede-social a { 
+    margin: 0 5px; 
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+    .sidebar {
+        width: 100%;
+        height: auto;
+        position: relative;
+        top: 0;
+    }
+    .content {
+        margin-left: 0;
+        margin-top: 0;
+        padding: 10px;
+        min-height: auto; 
+    }
+    .navbar {
+        position: relative;  
+    }
+    footer {
+        margin-left: 0;  /* Footer ocupa toda a largura em mobile */
+        width: 100%;
+        clear: both; 
+        margin-top: 20px; 
+        position: relative; 
+    }
+}
+
+/* Override para páginas full-footer (cadastro, aluguel, lista, etc.) */
+.full-footer footer { 
+    margin-left: 0; 
+    width: 100%; 
+}

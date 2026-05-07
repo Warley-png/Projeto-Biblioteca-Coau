@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">  <!-- Adicionei xmlns:sec para consistência -->
+    <head>
+        <title>Lista de Livros Emprestados</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+        <link rel="stylesheet" th:href="@{/estilo.css}">
+    </head>
+    <body th:class="${fullFooter} ? 'full-footer' : ''">
+        <nav class="navbar navbar-expand-sm navbar-dark bg-dark fixed-top">
+            <div class="container-fluid">
+                <div class="navbar-brand d-flex align-items-center">
+                    <h1>COAU</h1>
+                </div>
+                <div class="user-info ms-auto text-end">
+                    <!-- Exibe apenas o papel do usuário logado (Administrador ou Usuário) -->
+                    <h2 id="usuario" th:text="${isAdmin ? 'Administrador' : 'Usuário'}">Usuário</h2>
+                    <p id="data" th:text="${#temporals.format(#temporals.createNow(), 'dd/MM/yyyy HH:mm')}">Data</p>
+                </div>
+            </div>
+        </nav>
+
+        <div class="container" style="padding-top: 80px; max-width: 1100px;">
+            <div class="row mb-3 align-items-center">
+                <div class="col-md-8">
+                    <h3 class="text-center text-md-start">Lista de Livros Emprestados</h3>
+                </div>
+            </div>
+
+            <!-- Melhorei mensagens com ícones -->
+            <div th:if="${mensagem}" class="alert alert-success" role="alert">
+                <i class="fas fa-check-circle"></i> <span th:text="${mensagem}">Mensagem de sucesso!</span>
+            </div>
+            <div th:if="${erro}" class="alert alert-danger" role="alert">
+                <i class="fas fa-exclamation-triangle"></i> <span th:text="${erro}">Erro!</span>
+            </div>
+
+            <!-- Tabela de Empréstimos -->
+            <table class="table table-striped table-bordered">
+                <thead class="table-dark">
+                    <tr>
+                        <th>ID Empréstimo</th>
+                        <th>Livro</th>
+                        <th>Cliente</th>
+                        <th>Data Empréstimo</th>
+                        <th>Status</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="emprestimo : ${emprestimos}">
+                        <td th:text="${emprestimo.idAluguel}"></td>
+                        <td th:text="${emprestimo.livro.nomeLivro} + ' - ' + ${emprestimo.livro.autorLivro}"></td>
+                        <td th:text="${emprestimo.cliente.nomeCliente}"></td>
+                        <td th:text="${#temporals.format(emprestimo.dataEmprestimo, 'dd/MM/yyyy')}"></td>
+                        <td th:text="${emprestimo.status}" style="color: red"></td>
+                        <td>
+                            <!-- Botão para Devolução (restrito a ADMIN) -->
+                            <sec:authorize access="hasRole('ADMIN')">
+                                <form th:action="@{/livros/devolver/{id}(id=${emprestimo.idAluguel})}" method="post" style="display:inline;">
+                                    <button type="submit" class="btn btn-warning btn-sm" onclick="return confirm('Confirmar devolução?')">Devolver</button>
+                                </form>
+                            </sec:authorize>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div style="text-align:right; color: blue;">
+                <a th:href="@{/livros/telaprincipal}">Voltar ao menu Principal</a>
+            </div>
+        </div>
+        <footer class="bg-dark text-white mt-5 pt-4 pb-3">
+            <div class="row justify-content-center">
+                <div class="col-md-4 mb-4 mb-md-0 text-center">
+                    <h5 class="text-uppercase">Projeto Coau</h5>
+                    <address class="mb-0">
+                        Rua Um, 123<br>
+                        Bairro: Santa Inês<br>
+                        Cidade, Estado<br>
+                    </address>
+                </div>
+                <div class="col-md-4 mb-4 mb-md-0 text-center">
+                    <h5 class="text-uppercase">Contato</h5>
+                    <ul class="list-unstyled">
+                        <li class="mb-1">(00) 1234-5678</li>
+                        <li class="mb-1">contato@Coau.com</li>
+                    </ul>
+                </div>
+                <div class="col-md-4 text-center">
+                    <h5 class="text-uppercase mb-3">Redes Sociais</h5>
+                    <div class="rede-social">
+                        <a href="#"><img th:src="@{/imagens/facebook.png}" alt="Facebook" width="32" height="32"></a>
+                        <a href="#"><img th:src="@{/imagens/instagram.png}" alt="Instagram" width="32" height="32"></a>
+                        <a href="#"><img th:src="@{/imagens/whatsapp.png}" alt="WhatsApp" width="32" height="32"></a>
+                    </div>
+                </div>
+            </div>
+            <hr class="bg-light mt-4 mb-3">
+            <div class="row">
+                <div class="col-12 text-center">
+                    <p class="mb-0 small">&copy; 2025 Projeto COAU. Todos os direitos reservados.</p>
+                </div>
+            </div>
+        </footer>
+
+        <!-- Scripts -->
+        <script th:src="@{/js/script.js}"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    </body>
+</html>
