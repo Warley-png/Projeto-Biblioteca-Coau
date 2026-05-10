@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">  <!-- Adicionei xmlns:sec para consistência -->
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">  
     <head>
         <title>Lista de Livros Emprestados</title>
         <meta charset="UTF-8">
@@ -15,7 +15,7 @@
                     <h1>COAU</h1>
                 </div>
                 <div class="user-info ms-auto text-end">
-                    <!-- Exibe apenas o papel do usuário logado (Administrador ou Usuário) -->
+                   
                     <h2 id="usuario" th:text="${isAdmin ? 'Administrador' : 'Usuário'}">Usuário</h2>
                     <p id="data" th:text="${#temporals.format(#temporals.createNow(), 'dd/MM/yyyy HH:mm')}">Data</p>
                 </div>
@@ -29,7 +29,7 @@
                 </div>
             </div>
 
-            <!-- Melhorei mensagens com ícones -->
+           
             <div th:if="${mensagem}" class="alert alert-success" role="alert">
                 <i class="fas fa-check-circle"></i> <span th:text="${mensagem}">Mensagem de sucesso!</span>
             </div>

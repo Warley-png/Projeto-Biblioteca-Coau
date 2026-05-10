@@ -1,56 +1,71 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">  <!-- Adicionei xmlns:sec para consistência (não usado aqui, mas útil em outros templates) -->
-    <head>
-        <title>Acesso Livraria COAU</title>
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    </head>
-    <body>
-        <div class="container" style="padding-top: 80px; max-width: 1100px;">
-            <div class="row mb-3 align-items-center">
-                <div class="col-md-8">
-                    <h3 class="text-center text-md-start">Acesso Livraria COAU</h3>
-                </div>
-                <form th:action="@{/livros/telaLogin}" method="post" id="loginForm" class="row mb-3" style="text-align: center;">
-                    <div class="row g-3">
-                        <div class="col-md-6">
-                            <div class="mb-3 row align-items-center">
-                                <label for="username" class="col-sm-4 col-form-label">Login</label>
-                                <div class="col-sm-8">
-                                    <input type="text" id="username" name="username" placeholder="Seu login" autocomplete="username" required />
-                                </div>
-                            </div>
-                            <div class="mb-3 row align-items-center">
-                                <label for="password" class="col-sm-4 col-form-label">Senha</label>
-                                <div class="col-sm-8">
-                                    <input type="password" id="password" name="password" placeholder="Senha" autocomplete="current-password" required />
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="btn-group mt-3 d-flex gap-2">
-                        <button type="submit" id="loginButton" class="btn btn-success flex-fill" style="border-radius: 10px;">Entrar</button>
-                        <button type="button" class="btn btn-primary flex-fill" disabled style="border-radius: 10px;">Recuperar Senha</button>
-                    </div>
-                </form>
-                
-                <!-- Link para registro: Restrito a ADMIN (para consistência com telaprincipal.html e controlador) -->
-                <sec:authorize access="hasRole('ADMIN')">
-                    <a th:href="@{/livros/cadastroUsuario}" style="color: blue;">Registrar novo usuário</a>
-                </sec:authorize>
-            </div>
-            
-            <!-- Exibir erro (melhorei a mensagem) -->
-            <div th:if="${param.error}" class="alert alert-danger mt-3">
-                <strong>Erro de login:</strong> Usuário ou senha inválidos. Tente novamente.
-            </div>
-            
-            <!-- Mensagem opcional para sucesso (se redirecionado com sucesso) -->
-            <div th:if="${param.logout}" class="alert alert-info mt-3">
-                Você foi desconectado com sucesso.
-            </div>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - COAU</title>
+    <!-- Links corrigidos e completos -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cloudflare.com">
+    <style>
+         body { background-color: #f8f9fa; display: flex; align-items: center; height: 100vh; }
+        .login-card { max-width: 400px; width: 100%; margin: auto; border: none; border-radius: 15px; background: white; }
+    </style>
+</head>
+<body>
+
+    <div class="card login-card shadow p-4">
+        <div class="text-center mb-4">
+            <h2 class="fw-bold text-dark">COAU</h2>
+            <p class="text-muted">Acesse o sistema de biblioteca</p>
         </div>
-        
-        <script th:src="@{/js/script.js}"></script>
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    </body>
-</html>
+
+        <!-- Alerta de Erro -->
+        <div th:if="${param.error}" class="alert alert-danger border-0">
+            <i class="fas fa-exclamation-circle"></i> Login ou senha inválidos.
+        </div>
+
+        <!-- Mensagem de Sucesso -->
+        <div th:if="${mensagem}" class="alert alert-success border-0">
+            <i class="fas fa-check-circle"></i> <span th:text="${mensagem}"></span>
+        </div>
+
+        <!-- Logout -->
+        <div th:if="${param.logout}" class="alert alert-info border-0">
+            Você saiu do sistema.
+        </div>
+
+        <form th:action="@{/livros/telaLogin}" method="post">
+            <div class="mb-3">
+                <label class="form-label">Usuário</label>
+                <div class="input-group">
+                    <span class="input-group-text bg-white"><i class="fas fa-user text-muted"></i></span>
+                    <input type="text" name="username" class="form-control" placeholder="Seu login" required autofocus />
+                </div>
+            </div>
+
+            <div class="mb-4">
+                <label class="form-label">Senha</label>
+                <div class="input-group">
+                    <span class="input-group-text bg-white"><i class="fas fa-lock text-muted"></i></span>
+                    <input type="password" name="password" class="form-control" placeholder="Sua senha" required />
+                </div>
+            </div>
+
+            <button type="submit" class="btn btn-dark w-100 py-2 fw-bold">
+                Entrar <i class="fas fa-sign-in-alt ms-1"></i>
+            </button>
+        </form>
+
+        <div class="text-center mt-4">
+            <p class="small text-muted">Não tem uma conta? 
+                <!-- Link para cadastro (sem sec:authorize) -->
+                <a th:href="@{/livros/cadastroUsuario}" class="text-decoration-none fw-bold">Cadastre-se</a>
+            </p>
+        </div>
+    </div>
+
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>*/

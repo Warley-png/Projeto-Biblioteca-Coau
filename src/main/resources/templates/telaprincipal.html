@@ -35,7 +35,17 @@
                 <sec:authorize access="hasRole('ADMIN')">
                     <li><a th:href="@{/livros/cadastroCliente}" title="Cadastro de Cliente"><i class="fas fa-users"></i> Cadastro de Cliente</a></li>
                     <li><a th:href="@{/livros/cadastroUsuario}" title="Cadastro de Usuarios"><i class="fas fa-user-plus"></i> Cadastro de Usuários</a></li>
+                  
+                    <li>
+                        <a th:href="@{/livros/listaUsuarios}" title="Lista de Usuários">
+                            <i class="fas fa-user-gear"></i> Gerenciar Usuários
+                        </a>
+                    </li>
+
                 </sec:authorize>
+
+
+
             </ul>
             <h3>Relatório</h3>
             <ul>
@@ -52,12 +62,12 @@
             </ul>
             <h3>Opção</h3>
             <ul>
-                <!-- Sempre visível: Sair -->
+               
                 <li><a th:href="@{/logout}" onclick="return confirm('Tem certeza que deseja sair?')" title="Sair"><i class="fas fa-sign-out-alt"></i> Sair</a></li>
             </ul>
         </nav>
 
-        <main class="content flex-grow-1">  <!-- Adicione flex-grow-1 -->
+        <main class="content flex-grow-1"> 
             <h1>Bem-vindo ao Acervo Coau</h1>
             <p>Selecione uma opção no menu lateral.</p>
             <div th:if="${mensagem}" class="alert alert-success" role="alert">
@@ -69,7 +79,7 @@
         </main>
 
 
-        <!-- Rodapé (mantido intacto) -->
+        <!-- Rodapé -->
         <footer class="bg-dark text-white pt-4 pb-3">
             <div class="container"> 
                 <div class="row justify-content-center">

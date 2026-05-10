@@ -118,8 +118,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 return;
             }
 
-            // Deixe o Spring Security processar o submit (redirecionamento automático)
-            // Não use AJAX customizado – o backend cuida de autenticação e roles
+            
         });
     }
 });

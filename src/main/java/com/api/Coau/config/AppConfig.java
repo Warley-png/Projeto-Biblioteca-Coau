@@ -1,4 +1,4 @@
-package com.api.Coau.config;  // Ensure this is correct (uppercase "Coau")
+package com.api.Coau.config;  
 
 import com.api.Coau.model.Usuario;
 import com.api.Coau.model.usuarioRepository;
@@ -7,7 +7,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;  // Novo import: Substitua o antigo
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity; 
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.core.userdetails.User;
@@ -18,8 +18,8 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.AccessDeniedHandler;
 
 @Configuration
-@EnableWebSecurity  // Habilita configuração de segurança web
-@EnableMethodSecurity(prePostEnabled = true)  // Alterado: Use EnableMethodSecurity (não EnableGlobalMethodSecurity)
+@EnableWebSecurity  
+@EnableMethodSecurity(prePostEnabled = true)  
 public class AppConfig {
 
     private final usuarioRepository usuarioRepository;
@@ -53,17 +53,27 @@ public class AppConfig {
                 .authorizeHttpRequests(authz -> authz
                 // Público
                 .requestMatchers("/livros/telaLogin", "/livros/cadastroUsuario", "/livros/salvarUsuario").permitAll()
-                .requestMatchers("/js/**", "/css/**", "/images/**", "/imagens/**", "/estilo.css").permitAll() // Adicione /imagens/**
+                .requestMatchers("/js/**", "/css/**", "/images/**", "/imagens/**", "/estilo.css").permitAll() 
 
                 // USER e ADMIN: Tela principal, cadastro, listas e edição de livros
-                .requestMatchers("/livros/telaprincipal", "/livros/cadastro*").hasAnyRole("ADMIN", "USER")
-                .requestMatchers("/livros/lista*", "/livros/listaLivro*", "/livros/disponiveis", "/livros/editarLivro*").hasAnyRole("ADMIN", "USER")
-                // ADMIN: Exclusão e tudo o resto
-                .requestMatchers("/livros/excluirLivro*").hasRole("ADMIN")
+                .requestMatchers("/livros/telaprincipal").hasAnyRole("ADMIN", "USER")
+                // Regras para Livros (USER e ADMIN)
+               
+                .requestMatchers("/livros/cadastro-livros/**").hasAnyRole("ADMIN", "USER")
+                .requestMatchers("/livros/cadastro/**").hasAnyRole("ADMIN", "USER")
+                .requestMatchers("/livros/listaLivro/**").hasAnyRole("ADMIN", "USER")
+                .requestMatchers("/livros/editarLivro/**").hasAnyRole("ADMIN", "USER")
+                // Regras exclusivas de ADMIN
+                .requestMatchers("/livros/excluirLivro/**").hasRole("ADMIN")
+                .requestMatchers("/livros/listaUsuarios/**").hasRole("ADMIN")
+                .requestMatchers("/livros/cadastroUsuario/**").hasRole("ADMIN")
+                .requestMatchers("/livros/salvarUsuario/**").hasRole("ADMIN")
+                .requestMatchers("/livros/resetarSenhaUsuario/**").hasRole("ADMIN")
+              
                 .anyRequest().hasRole("ADMIN")
                 )
                 .exceptionHandling(ex -> ex
-                .accessDeniedHandler(accessDeniedHandler()) // Use o handler customizado
+                .accessDeniedHandler(accessDeniedHandler()) 
                 )
                 .formLogin(form -> form
                 .loginPage("/livros/telaLogin")
@@ -77,7 +87,7 @@ public class AppConfig {
                 .logoutSuccessUrl("/livros/telaLogin")
                 .permitAll()
                 )
-                .csrf(csrf -> csrf.disable());  // Desabilite em desenvolvimento; habilite em produção
+                .csrf(csrf -> csrf.disable());  
 
         return http.build();
     }
@@ -87,7 +97,7 @@ public class AppConfig {
         return username -> {
             Usuario usuario = usuarioRepository.findByLogin(username)
                     .orElseThrow(() -> new UsernameNotFoundException("Usuário não encontrado"));
-            String perfil = usuario.getPerfil().toUpperCase();  // Já está, mas confirme
+            String perfil = usuario.getPerfil().toUpperCase();  
 
             if (!"USER".equals(perfil) && !"ADMIN".equals(perfil)) {
                 throw new UsernameNotFoundException("Perfil inválido: " + perfil);
@@ -96,7 +106,7 @@ public class AppConfig {
             return User.builder()
                     .username(usuario.getLogin())
                     .password(usuario.getSenha())
-                    .roles(perfil.toUpperCase()) // O Spring vai colocar o ROLE_ sozinho aqui
+                    .roles(perfil.toUpperCase()) 
                     .build();
 
         };

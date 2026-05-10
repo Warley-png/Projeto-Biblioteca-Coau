@@ -9,12 +9,10 @@ import com.api.Coau.model.Usuario;
 import com.api.Coau.model.aluguelLivroRepository;
 import com.api.Coau.model.usuarioRepository;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import java.time.LocalDate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -92,7 +90,7 @@ public class CoauController {
         boolean isAdmin = false;
         if (auth != null && auth.isAuthenticated()) {
             isAdmin = auth.getAuthorities().stream()
-                .anyMatch(authority -> authority.getAuthority().equals("ROLE_ADMIN"));
+                    .anyMatch(authority -> authority.getAuthority().equals("ROLE_ADMIN"));
         }
         model.addAttribute("isAdmin", isAdmin);
 
@@ -110,7 +108,7 @@ public class CoauController {
         boolean isAdmin = false;
         if (auth != null && auth.isAuthenticated()) {
             isAdmin = auth.getAuthorities().stream()
-                .anyMatch(authority -> authority.getAuthority().equals("ROLE_ADMIN"));
+                    .anyMatch(authority -> authority.getAuthority().equals("ROLE_ADMIN"));
         }
         model.addAttribute("isAdmin", isAdmin);
 
@@ -120,26 +118,15 @@ public class CoauController {
         return "cadastro-livros";
     }
 
-   /* @PostMapping("/livros/telaLogin")
-    public String login(HttpServletResponse response, Authentication auth) {
-        if (auth != null && !auth.getAuthorities().isEmpty()) {
-            String role = auth.getAuthorities().stream().findFirst()
-                    .map(GrantedAuthority::getAuthority)
-                    .orElse("USER");
-            response.setHeader("X-User-Role", role.replace("ROLE_", "").toLowerCase());
-        } else {
-            response.setHeader("X-User-Role", "user");
-        }
-        return "redirect:/livros/telaprincipal";
-    }*/
-    @PreAuthorize("hasRole('ADMIN')")
+    
+   
     @GetMapping("/livros/cadastroUsuario")
     public String cadastroUsuarioForm(Model model) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         boolean isAdmin = false;
         if (auth != null && auth.isAuthenticated()) {
             isAdmin = auth.getAuthorities().stream()
-                .anyMatch(authority -> authority.getAuthority().equals("ROLE_ADMIN"));
+                    .anyMatch(authority -> authority.getAuthority().equals("ROLE_ADMIN"));
         }
         model.addAttribute("isAdmin", isAdmin);
         model.addAttribute("usuario", new Usuario());
@@ -147,12 +134,12 @@ public class CoauController {
         return "cadastroUsuario";
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
+    
     @PostMapping("/livros/salvarUsuario")
     public String salvarUsuario(@RequestParam String usuario, @RequestParam String login,
             @RequestParam String senha, @RequestParam String perfil,
             RedirectAttributes redirectAttributes) {
-        
+
         System.out.println("Recebido: usuario=" + usuario + ", login=" + login + ", senha=" + (senha != null ? "[oculta]" : "null") + ", perfil=" + perfil);
 
         if (usuario == null || usuario.trim().isEmpty()) {
@@ -200,10 +187,35 @@ public class CoauController {
         }
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
+    @GetMapping("/livros/listaUsuarios")
+    public String listarUsuarios(Model model) {
+        model.addAttribute("usuarios", usuarioRepository.findAll());
+        return "listaUsuarios";
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @PostMapping("/livros/resetarSenhaUsuario/{id}")
+    public String resetarSenhaUsuario(@PathVariable("id") Long id, RedirectAttributes redirectAttributes) {
+        try {
+            Usuario usuario = usuarioRepository.findById(id)
+                    .orElseThrow(() -> new IllegalArgumentException("Usuário inválido:" + id));
+
+            // Define a senha padrão "mudar123" criptografada
+            usuario.setSenha(passwordEncoder.encode("mudar123"));
+            usuarioRepository.save(usuario);
+
+            redirectAttributes.addFlashAttribute("mensagem", "Senha do usuário " + usuario.getUsuario() + " resetada para: mudar123");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("erro", "Erro ao resetar senha: " + e.getMessage());
+        }
+        return "redirect:/livros/listaUsuarios";
+    }
+
     @PreAuthorize("hasRole('ADMIN') or hasRole('USER')")
     @PostMapping("/livros/cadastro")
     public String salvar(@Valid @ModelAttribute Livro livro, BindingResult result, RedirectAttributes redirectAttributes) {
-        
+
         if (result.hasErrors()) {
             return "cadastro-livros";
         }
@@ -219,60 +231,61 @@ public class CoauController {
         boolean isAdmin = false;
         if (auth != null && auth.isAuthenticated()) {
             isAdmin = auth.getAuthorities().stream()
-                .anyMatch(authority -> authority.getAuthority().equals("ROLE_ADMIN"));
+                    .anyMatch(authority -> authority.getAuthority().equals("ROLE_ADMIN"));
         }
         model.addAttribute("isAdmin", isAdmin);
-        
+
         List<Livro> livros = repository.findAll();
         model.addAttribute("livros", livros);
         model.addAttribute("fullFooter", true);
         return "listaLivro";
     }
+    // --- MÉTODOS DE EDIÇÃO E EXCLUSÃO DE LIVROS ---
 
     @PreAuthorize("hasRole('ADMIN') or hasRole('USER')")
     @GetMapping("/livros/editarLivro/{id}")
     public String editarLivro(@PathVariable Long id, Model model, RedirectAttributes redirectAttributes) {
+        
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        boolean isAdmin = false;
-        if (auth != null && auth.isAuthenticated()) {
-            isAdmin = auth.getAuthorities().stream()
-                .anyMatch(authority -> authority.getAuthority().equals("ROLE_ADMIN"));
-        }
+        boolean isAdmin = auth != null && auth.getAuthorities().stream()
+                .anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));
         model.addAttribute("isAdmin", isAdmin);
-        Optional<Livro> livroOpt = repository.findById(id);
 
+        Optional<Livro> livroOpt = repository.findById(id);
         if (livroOpt.isEmpty()) {
             redirectAttributes.addFlashAttribute("erro", "Livro não encontrado!");
             return "redirect:/livros/listaLivro";
         }
+
         model.addAttribute("livro", livroOpt.get());
         model.addAttribute("fullFooter", true);
-        return "cadastro-livros";
+        return "cadastro-livros"; 
     }
 
     @PreAuthorize("hasRole('ADMIN')")
-    @PostMapping("/livros/excluirLivro/{id}")
+    @PostMapping("/livros/excluirLivro/{id}") 
     public String excluirLivro(@PathVariable Long id, RedirectAttributes redirectAttributes) {
         try {
             repository.deleteById(id);
             redirectAttributes.addFlashAttribute("mensagem", "Livro excluído com sucesso!");
         } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("erro", "Erro ao excluir Livro: " + e.getMessage());
+            redirectAttributes.addFlashAttribute("erro", "Não foi possível excluir o livro.");
         }
         return "redirect:/livros/listaLivro";
     }
 
+   
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/livros/cadastroCliente")
     public String cadastroClienteForm(Model model) {
-         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         boolean isAdmin = false;
         if (auth != null && auth.isAuthenticated()) {
             isAdmin = auth.getAuthorities().stream()
-                .anyMatch(authority -> authority.getAuthority().equals("ROLE_ADMIN"));
+                    .anyMatch(authority -> authority.getAuthority().equals("ROLE_ADMIN"));
         }
         model.addAttribute("isAdmin", isAdmin);
-        
+
         model.addAttribute("cliente", new Cliente());
         model.addAttribute("clientes", clienteRepository.findAll());
         model.addAttribute("fullFooter", true);
@@ -296,14 +309,14 @@ public class CoauController {
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/livros/lista-clientes")
     public String listarClientes(Model model) {
-         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         boolean isAdmin = false;
         if (auth != null && auth.isAuthenticated()) {
             isAdmin = auth.getAuthorities().stream()
-                .anyMatch(authority -> authority.getAuthority().equals("ROLE_ADMIN"));
+                    .anyMatch(authority -> authority.getAuthority().equals("ROLE_ADMIN"));
         }
         model.addAttribute("isAdmin", isAdmin);
-        
+
         List<Cliente> clientes = clienteRepository.findAll();
         model.addAttribute("clientes", clientes);
         model.addAttribute("fullFooter", true);
@@ -313,11 +326,11 @@ public class CoauController {
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/livros/editarCliente/{id}")
     public String editarCliente(@PathVariable Long id, Model model, RedirectAttributes redirectAttributes) {
-         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         boolean isAdmin = false;
         if (auth != null && auth.isAuthenticated()) {
             isAdmin = auth.getAuthorities().stream()
-                .anyMatch(authority -> authority.getAuthority().equals("ROLE_ADMIN"));
+                    .anyMatch(authority -> authority.getAuthority().equals("ROLE_ADMIN"));
         }
         model.addAttribute("isAdmin", isAdmin);
         Optional<Cliente> clienteOpt = clienteRepository.findById(id);
@@ -331,33 +344,14 @@ public class CoauController {
         model.addAttribute("fullFooter", true);
         return "cadastroCliente";
     }
-    
-    /*@PreAuthorize("hasRole('ADMIN')")
-    @PostMapping("/livros/excluirCliente/{id}")
-    public String excluirCliente(@PathVariable Long id, RedirectAttributes redirectAttributes) {
-        try {
-            // Primeiro, exclua todas as retiradas associadas ao cliente
-            ClienteRepository.deleteByIdCliente(id);  // Método customizado no repositório
-            
-            // Agora, exclua o cliente
-            clienteRepository.deleteById(id);
-            
-            // Sucesso: adicione uma mensagem positiva (opcional)
-            redirectAttributes.addFlashAttribute("sucesso", "Cliente excluído com sucesso!");
-        } catch (Exception e) {
-            // Erro: adicione a mensagem de erro
-            redirectAttributes.addFlashAttribute("erro", "Erro ao excluir cliente: " + e.getMessage());
-        }
-        return "redirect:/livros/cadastroCliente";
-    }*/
 
-
+  
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/livros/excluirCliente/{id}")
     public String excluirCliente(@PathVariable Long id, RedirectAttributes redirectAttributes) {
         try {
             clienteRepository.deleteById(id);
-            redirectAttributes.addFlashAttribute("erro", "Erro ao excluir cliente: " );
+            redirectAttributes.addFlashAttribute("erro", "Erro ao excluir cliente: ");
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("erro", "Erro ao excluir cliente: " + e.getMessage());
         }
@@ -367,14 +361,14 @@ public class CoauController {
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/livros/emprestimo")
     public String telaEmprestimo(Model model) {
-         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         boolean isAdmin = false;
         if (auth != null && auth.isAuthenticated()) {
             isAdmin = auth.getAuthorities().stream()
-                .anyMatch(authority -> authority.getAuthority().equals("ROLE_ADMIN"));
+                    .anyMatch(authority -> authority.getAuthority().equals("ROLE_ADMIN"));
         }
         model.addAttribute("isAdmin", isAdmin);
-        
+
         System.out.println("Endpoint GET /livros/emprestimo chamado!");
         List<Livro> livros = repository.findAll();
         List<Cliente> clientes = clienteRepository.findAll();
@@ -415,14 +409,14 @@ public class CoauController {
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/livros/lista-emprestimo")
     public String listarEmprestimos(Model model) {
-         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         boolean isAdmin = false;
         if (auth != null && auth.isAuthenticated()) {
             isAdmin = auth.getAuthorities().stream()
-                .anyMatch(authority -> authority.getAuthority().equals("ROLE_ADMIN"));
+                    .anyMatch(authority -> authority.getAuthority().equals("ROLE_ADMIN"));
         }
         model.addAttribute("isAdmin", isAdmin);
-        
+
         List<AluguelLivro> emprestimos = aluguelLivroRepository.findAll();
         model.addAttribute("emprestimos", emprestimos);
         model.addAttribute("fullFooter", true);

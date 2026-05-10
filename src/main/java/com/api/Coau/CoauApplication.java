@@ -1,4 +1,4 @@
-     package com.api.Coau;  // Mude de "com.api.Coau" para "com.api.coau"
+     package com.api.Coau;  
 
      import org.springframework.boot.SpringApplication;
      import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -16,12 +16,6 @@ public class CoauApplication extends SpringBootServletInitializer {
     }
 }
 
-     /* @SpringBootApplication
-     public class CoauApplication extends SpringBootServletInitializer {
-         public static void main(String[] args) {
-             SpringApplication.run(CoauApplication.class, args);
-         }
-      }*/
-         
+    
     
      

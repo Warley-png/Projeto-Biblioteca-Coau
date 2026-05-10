@@ -4,17 +4,17 @@ body {
     padding: 0; 
 }
    .content {
-       background-image: url('/imagens/fundo.jpg');  /* Caminho relativo à raiz do servidor */
-       background-size: cover;  /* Cobre toda a área sem distorcer */
-       background-position: center;  /* Centraliza a imagem */
-       background-repeat: no-repeat;  /* Não repete a imagem */
-       /* Outros estilos existentes, como padding, margin, etc. */
-       padding: 30px;  /* Exemplo: adicione padding para que o texto não fique colado na borda */
-       margin-bottom: 0;  /* Remove margem inferior para colar no footer */
-       min-height: calc(100vh - 200px);  /* Ajuste a altura para ocupar quase toda a tela, subtraindo o espaço do footer (aprox. 200px) */
+       background-image: url('/imagens/fundo.jpg');  
+       background-size: cover; 
+       background-position: center;  
+       background-repeat: no-repeat;  
+      
+       padding: 30px;  
+       margin-bottom: 0;  
+       min-height: calc(100vh - 200px);  
    }
    footer {
-       margin-top: 0;  /* Remove margem superior para colar no main */
+       margin-top: 0; 
    }
 
 .sidebar { 
@@ -76,8 +76,8 @@ body {
 }
 
 footer { 
-    margin-left: 250px;  /* Respeita o sidebar em desktop */
-    width: calc(100% - 250px);  /* Largura restante */
+    margin-left: 250px;  
+    width: calc(100% - 250px);  
     clear: both; 
     margin-top: 20px; 
     position: relative; 
@@ -105,7 +105,7 @@ footer {
         position: relative;  
     }
     footer {
-        margin-left: 0;  /* Footer ocupa toda a largura em mobile */
+        margin-left: 0;  
         width: 100%;
         clear: both; 
         margin-top: 20px; 

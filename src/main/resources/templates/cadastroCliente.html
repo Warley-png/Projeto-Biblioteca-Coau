@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">  <!-- Adicionei xmlns:sec para controle de acesso -->
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">  
     <head>
         <title>Cadastro de Clientes</title>
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">  <!-- Adicionei Font Awesome para ícones -->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">  
         <link th:href="@{/estilo.css}" rel="stylesheet">
     </head>
     <body th:class="${fullFooter} ? 'full-footer' : ''">
@@ -13,7 +13,7 @@
                     <h1>COAU</h1>
                 </div>
                 <div class="user-info ms-auto text-end">
-                    <!-- Exibe apenas o papel do usuário logado (Administrador ou Usuário) -->
+                 
                     <h2 id="usuario" th:text="${isAdmin ? 'Administrador' : 'Usuário'}">Usuário</h2>
                     <p id="data" th:text="${#temporals.format(#temporals.createNow(), 'dd/MM/yyyy HH:mm')}">Data</p>
                 </div>
@@ -39,7 +39,7 @@
                 </div>
             </div>
 
-            <!-- Melhorei mensagens com ícones -->
+            <!-- mensagens com ícones -->
             <div th:if="${mensagem}" class="alert alert-success" role="alert">
                 <i class="fas fa-check-circle"></i> <span th:text="${mensagem}">Mensagem de sucesso!</span>
             </div>
@@ -64,14 +64,14 @@
                         <td th:text="${cliente.emailCliente}"></td>
                         <td th:text="${cliente.telefoneCliente}"></td>
                         <td>
-                            <!-- Apenas ADMIN: Editar e Excluir -->
+                            <!--  ADMIN: Editar e Excluir -->
                             <sec:authorize access="hasRole('ADMIN')">
                                 <a th:href="@{/livros/editarCliente/{id}(id=${cliente.idCliente})}" class="btn btn-warning btn-sm">Editar</a>
                                 <form th:action="@{/livros/excluirCliente/{id}(id=${cliente.idCliente})}" method="post" style="display:inline;">
                                     <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Tem certeza que deseja excluir este cliente?')">Excluir</button>
                                 </form>
                             </sec:authorize>
-                            <!-- Se USER, a coluna fica vazia (ou adicione "Visualizar" se necessário) -->
+                            
                         </td>
                     </tr>
                 </tbody>
