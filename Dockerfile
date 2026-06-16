@@ -6,6 +6,6 @@ RUN mvn clean package -DskipTests
 FROM amazoncorretto:21-alpine
 RUN apk add --no-cache fontconfig ttf-dejavu
 WORKDIR /app
-COPY --from=build /app/target/Coau.jar app.jar
+COPY --from=build /app/target/coau.jar app.jar
 EXPOSE 8080
-ENTRYPOINT ["java", "-Djava.awt.headless=true", "-jar", "app.jar", "--spring.main.web-application-type=servlet"]
+ENTRYPOINT ["java", "-Djava.awt.headless=true", "-jar", "app.jar","--server.port=${PORT:8080}", "--spring.main.web-application-type=servlet"]
