@@ -43,6 +43,11 @@ public class CoauController {
 
     @Autowired
     private BCryptPasswordEncoder passwordEncoder;
+    
+    @GetMapping("/")
+    public String redirecionaLogin(){
+        return "redirect:/livros/telaLogin";
+    }
 
     @GetMapping("/livros/telaLogin")
     public String telaLogin() {

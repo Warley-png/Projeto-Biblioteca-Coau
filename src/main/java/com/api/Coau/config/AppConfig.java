@@ -52,7 +52,7 @@ public class AppConfig {
         http
                 .authorizeHttpRequests(authz -> authz
                 // Público
-                .requestMatchers("/livros/telaLogin", "/livros/cadastroUsuario", "/livros/salvarUsuario").permitAll()
+                .requestMatchers("/","/livros/telaLogin", "/livros/cadastroUsuario", "/livros/salvarUsuario").permitAll()
                 .requestMatchers("/js/**", "/css/**", "/images/**", "/imagens/**", "/estilo.css").permitAll() 
 
                 // USER e ADMIN: Tela principal, cadastro, listas e edição de livros
