@@ -23,26 +23,26 @@
       @Column(name = "nomeliv", nullable = false)
       private String nomeLivro;
 
-      @NotBlank(message = "Autor é obrigatório")
-      @Column(name = "autoliv", nullable = false)  
+      //@NotBlank(message = "Autor é obrigatório")
+      @Column(name = "autoliv", nullable = true)  
       private String autorLivro;
 
       @Column(name = "assuntoliv")
       private String assuntoLivro;
 
-      @NotBlank(message = "Editora é obrigatória")
-      @Column(name = "editoraliv", nullable = false)
+     // @NotBlank(message = "Editora é obrigatória")
+      @Column(name = "editoraliv", nullable = true)
       private String editoraLivro;
 
-      @NotNull(message = "Ano é obrigatório")  
+      //@NotNull(message = "Ano é obrigatório")  
       @Column(name = "ano")
       private Integer ano;  
       
       @Column(name = "volume")
       private String volume;
 
-      @NotBlank(message = "Tipo é obrigatório")
-      @Column(name = "tipo", nullable = false)
+      //@NotBlank(message = "Tipo é obrigatório")
+      @Column(name = "tipo", nullable = true)
       private String tipo;
 
       @NotBlank(message = "Prateleira é obrigatória")
