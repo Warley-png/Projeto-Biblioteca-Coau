@@ -41,6 +41,7 @@
 
             <form id="formLivro" th:action="@{/livros/cadastro}" th:object="${livro}" method="post">
                 <input type="hidden" th:field="*{idliv}" />
+                 <input type="hidden" th:field="*{disponivel}" th:value="true" />
                 <div class="row g-3">
                     <div class="col-md-6">
                         <div class="mb-3 row align-items-center">
@@ -79,7 +80,7 @@
                         <div class="mb-3 row align-items-center">
                             <label for="volume" class="col-sm-4 col-form-label">Volume:</label>
                             <div class="col-sm-8">
-                                <input type="number" th:field="*{volume}" id="volume" placeholder="Volume" class="form-control" />
+                                <input type="text" th:field="*{volume}" id="volume" placeholder="Volume" class="form-control" />
                             </div>
                         </div>
                         <div class="mb-3 row align-items-center">
