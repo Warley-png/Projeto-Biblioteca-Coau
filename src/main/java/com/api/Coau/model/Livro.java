@@ -35,7 +35,7 @@
       private String editoraLivro;
 
       //@NotNull(message = "Ano é obrigatório")  
-      @Column(name = "ano")
+      @Column(name = "ano", nullable=true)
       private Integer ano;  
       
       @Column(name = "volume")
