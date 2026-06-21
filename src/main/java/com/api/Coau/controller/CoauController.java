@@ -222,6 +222,7 @@ public class CoauController {
     public String salvar(@Valid @ModelAttribute Livro livro, BindingResult result, RedirectAttributes redirectAttributes, Model model) {
 
         if (result.hasErrors()) {
+             System.out.println("ERRO DE VALIDAÇÃO: " + result.getAllErrors());
             model.addAttribute("isAdmin", false);
             model.addAttribute("fullFooter", false);
             return "cadastro-livros";
