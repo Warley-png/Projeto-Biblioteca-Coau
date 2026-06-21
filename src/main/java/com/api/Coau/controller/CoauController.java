@@ -219,9 +219,11 @@ public class CoauController {
 
     @PreAuthorize("hasRole('ADMIN') or hasRole('USER')")
     @PostMapping("/livros/cadastro")
-    public String salvar(@Valid @ModelAttribute Livro livro, BindingResult result, RedirectAttributes redirectAttributes) {
+    public String salvar(@Valid @ModelAttribute Livro livro, BindingResult result, RedirectAttributes redirectAttributes, Model model) {
 
         if (result.hasErrors()) {
+            model.addAttribute("isAdmin", false);
+            model.addAttribute("fullFooter", false);
             return "cadastro-livros";
         }
         repository.save(livro);
